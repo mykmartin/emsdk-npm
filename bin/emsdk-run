@@ -13,9 +13,12 @@ fi
 # Manually change directory to work around bug with some shells:
 # https://github.com/emscripten-core/emsdk/issues/234
 EMSDKRUN_CURDIR=`pwd`
+BASH_SOURCE="./emsdk_env.sh"
 cd "$DIR/emsdk"
 . ./emsdk_env.sh
 cd "$EMSDKRUN_CURDIR"
 
 # Run the binary, which should now be in PATH
-"$1" "${@:2}"
+CMD="$1"
+shift
+"$CMD" "$@"

@@ -41,8 +41,8 @@ function run(command, args) {
             ]
         }
     );
-    child.on('exit', (e) => {
-        process.exit(e.code);
+    child.on('exit', (code) => {
+        process.exit(code);
     });
     child.on('error', (err) => {
         throw err;

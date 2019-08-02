@@ -1,4 +1,4 @@
-// emsdk-npm - common.js 
+// emsdk-npm - common.js
 // Copyright 2019 Brion Vibber
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -20,7 +20,7 @@
 // DEALINGS IN THE SOFTWARE.
 
 const path = require('path');
-
+const os = require('os');
 const child_process = require('child_process');
 
 function base() {
@@ -29,27 +29,23 @@ function base() {
     return basedir;
 }
 
-function run(command, args) {
-    const child = child_process.spawn(
-        command,
-        args,
-        {
-            stdio: [
-                'inherit',
-                'inherit',
-                'inherit'
-            ]
-        }
-    );
-    child.on('exit', (e) => {
-        process.exit(e.code);
-    });
-    child.on('error', (err) => {
-        throw err;
-    });
+function run(command, args, opts) {
+    opts = opts || {};
+    if (opts.logCmd) {
+        console.log('+', command, args.join(' '));
+    }
+    const result = child_process.spawnSync(command, args, opts);
+    if (result.error) {
+        throw result.error;
+    }
+    return result;
 }
 
-module.exports = {
-    base: base,
-    run: run
-};
+function run_local(subdir, cmd, args, opts) {
+    const dir = path.join(base(), subdir);
+    const suffix = (os.type() == 'Windows_NT') ? '.bat' : '';
+    const target = path.join(dir, cmd + suffix);
+    return run(target, args, opts);
+}
+
+module.exports = {base, run, run_local};

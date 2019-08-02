@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// emsdk-npm - emsdk-checkout.js 
+// emsdk-npm - emsdk-checkout.js
 // Copyright 2019 Brion Vibber
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -21,16 +21,15 @@
 // DEALINGS IN THE SOFTWARE.
 
 const path = require('path');
+const fs = require('fs');
 const common = require('./common.js');
-
-function git(args) {
-    common.run('git', args);
-}
 
 const gitdir = path.join(common.base(), 'emsdk');
 
-git([
-    'clone',
-    'https://github.com/emscripten-core/emsdk.git',
-    gitdir
-]);
+if (!fs.existsSync(gitdir)) {
+    common.run(
+        'git',
+        ['clone', 'https://github.com/emscripten-core/emsdk.git', gitdir],
+        {stdio: 'inherit'}
+    );
+}
